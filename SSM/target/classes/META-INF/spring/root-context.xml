@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.2.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+                           http://code.alibabatech.com/schema/dubbo
+                           http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- spring 注解支持 -->
+	<context:annotation-config />
+	<context:component-scan base-package="com.fulihui.yiyuanservice" />
+
+	<!-- 使用注解的包路径 -->
+	<context:component-scan base-package="com.fulihui.yiyuanservice">
+		<!-- 过滤@Controller注解 -->
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<context:property-placeholder location="classpath:app.properties" />
+
+	<dubbo:application name="yiyuan-core-service" />
+
+	<!-- <dubbo:registry address="${zookeeper.service.url}" /> -->
+
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.service.url}" />
+
+	<bean id="authBizManager"
+		class="com.fulihui.yiyuanservice.biz.shard.impl.AuthBizManagerImpl">
+		<property name="authPages">
+			<list>
+				<value>/user/</value>
+				<value>/pay/</value>
+				<value>/weixin/create</value>
+				<value>/weixin/payment</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="lotteryTaskPool" class="com.fulihui.yiyuanservice.task.TaskPool">
+		<constructor-arg>
+			<value>${pool.size}</value>
+		</constructor-arg>
+	</bean>
+
+	<bean id="appConfig" class="com.fulihui.yiyuanservice.common.util.AppConfig">
+
+		<!-- 本地测试用 -->
+		<property name="testLocal" value="${test.local}" />
+		<property name="testUserId" value="${test.userId}" />
+		<property name="testOpenId" value="${test.openId}" />
+		<property name="hostURL" value="${hostURL}" />
+		<property name="serviceHost" value="${serviceHost}" />
+
+		<property name="expressUrl" value="${express.server.url}"></property>
+		<property name="expressKey" value="${express.server.key}"></property>
+		<property name="casURL" value="${cas.user.url}" />
+		<property name="remoteCardURL" value="${online.class.url}" />
+		<property name="userURL" value="${userURL}" />
+		<property name="fuzhanURL" value="${fuzhanURL}" />
+
+	</bean>
+
+
+	<bean id="weixinClient" class="com.fulihui.weixinclient.WeixinClientImpl" />
+
+
+	<!-- Sequence register -->
+	<bean class="org.near.dal.sequence.SequenceKitLoader">
+		<property name="serviceName" value="com.fulihui.yiyuan" />
+		<property name="sequenceService" ref="sequenceService" />
+	</bean>
+
+
+
+
+
+
+
+
+
+</beans>

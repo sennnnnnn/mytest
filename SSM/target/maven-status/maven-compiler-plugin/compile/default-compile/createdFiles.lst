@@ -1,0 +1,5 @@
+com/hs/dubbo/entity/AlarmRule.class
+com/hs/dubbo/serviceimpl/TestRegistryServiceImpl.class
+com/hs/dubbo/service/TestRegistryService.class
+com/hs/dubbo/entity/PageEntity.class
+com/hs/dubbo/controller/BaseController.class

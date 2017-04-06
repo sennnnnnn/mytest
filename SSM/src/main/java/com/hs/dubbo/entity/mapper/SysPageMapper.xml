@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.dao.PageDao">
+<!-- 映射文件,type是configuration.xml中定义的别名(alias属性),id值供本文件中resultMap属性调用
+	property是实体类的属性名(根据需要得到的结果,自行添加所需要的字段),
+	colunm是数据库字段(这个字段不一定是是同一张表中的字段,查询的任何一张表中的任何一个字段,都可以在此配置)
+	,如果数据库字段和实体类字段完全相同则不用配置，反之必须配置，否则字段名不同的属性得不到值(建议无论字段名是否相同都配置)
+	javaType指定java数据类型， jdbcType是数据库字段类型
+ -->
+<resultMap id="pageMapper" type="com.hs.vo.PageEntity">
+     <id property="pageId" column="PAGE_ID"/>
+     <result property="prePageId" column="PRE_PAGE_ID"/>
+    <result property="pageName" column="PAGE_NAME"/>
+    <result property="url" column="URL"/>
+    <result property="orderNo" column="ORDER_NO"/>
+     <result property="iconName" column="ICON_NAME"/>
+    <result property="description" column="DESCRIPTION"/>
+         <!-- 一对多配置 -->  
+    <collection property="sysPages" ofType="java.util.Set" select="getEmpById" column="PAGE_ID"/> 
+</resultMap> 
+    <select id="getEmpById" parameterType="String" resultMap="pageMapper">  
+        select * from T_Sys_Page where PRE_PAGE_ID = #{id}  order by  ORDER_NO
+    </select> 
+	
+	<!-- 添加权限 -->
+	<insert id="addPage">
+	insert into t_sys_page(
+		   PRE_PAGE_ID,
+        	PAGE_NAME ,
+        	URL ,
+        	ORDER_NO,
+        	DESCRIPTION,
+        	ICON_NAM
+	) VALUES(
+			#{prePageId},
+        	#{pageName},
+        	#{url},
+        	1,
+        	#{description},
+        	#{iconName}
+	)
+	</insert>
+	
+	<!-- 查询所有父权限 -->
+	<select id="queryParent" resultMap="pageMapper">
+		select * from  t_sys_page where PRE_PAGE_ID  is null or PRE_PAGE_ID = ""
+	</select>
+	
+	<!-- 查询所有权限 -->
+	<select id="queryAllPage" resultMap="pageMapper">
+		select * from t_sys_page 
+	</select>
+	
+	<!-- 修改权限 -->
+	<update id="updatePage">
+		update t_sys_page set 
+			PRE_PAGE_ID = #{prePageId},
+        	PAGE_NAME =#{pageName},
+        	URL = #{url},
+        	ORDER_NO = #{orderNo},
+        	DESCRIPTION = #{description},
+        	ICON_NAM #{iconName} 
+        where 
+        	PAGE_ID = #{pageId}
+	</update>
+	
+	<!-- 删除权限 -->
+	<delete id="deleteByPk">
+		delete from t_sys_page where PAGE_ID = #{pageId} or PRE_PAGE_ID = #{pageId}
+	</delete>
+</mapper>

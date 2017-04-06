@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+	default-autowire="byName" default-lazy-init="true">
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="-1" />
+		<property name="maxIdle" value="2000" />
+		<property name="minIdle" value="100" />
+		<property name="maxWaitMillis" value="30000" />
+
+		<property name="minEvictableIdleTimeMillis" value="864000000" />
+		<property name="numTestsPerEvictionRun" value="10" />
+		<property name="lifo" value="false" />
+		<property name="softMinEvictableIdleTimeMillis" value="10" />
+
+
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+<!-- 		<property name="testWhileIdle" value="false" /> -->
+<!-- 		<property name="testWhileIdle" value="300000" /> -->
+<!-- 		<property name="testWhileIdle" value="true" /> -->
+	</bean>
+
+
+
+
+	<!-- 此处它根据你保存的Key实现了切分进行存储 也就是说会分配到一台机器，而不是会复制到两台机器， 当你再次获取key的时候，它会自动过分配到对应的机器获取Key的数据。 -->
+<!-- 	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool" -->
+<!-- 		destroy-method="destroy"> -->
+<!-- 		<constructor-arg ref="jedisPoolConfig" /> -->
+<!-- 		<constructor-arg> -->
+<!-- 			<list> -->
+<!-- 				<bean class="redis.clients.jedis.JedisShardInfo"> -->
+<!-- 					<constructor-arg value="127.0.0.1" /> -->
+<!-- 					<constructor-arg type="int" value="7000" /> -->
+<!-- 					<constructor-arg value="instance:01" /> -->
+<!-- 				</bean> -->
+<!-- 				<bean class="redis.clients.jedis.JedisShardInfo"> -->
+<!-- 					<constructor-arg value="127.0.0.1" /> -->
+<!-- 					<constructor-arg type="int" value="7001" /> -->
+<!-- 					<constructor-arg value="instance:02" /> -->
+<!-- 				</bean> -->
+<!-- 				<bean class="redis.clients.jedis.JedisShardInfo"> -->
+<!-- 					<constructor-arg value="127.0.0.1" /> -->
+<!-- 					<constructor-arg type="int" value="7003" /> -->
+<!-- 					<constructor-arg value="instance:03" /> -->
+<!-- 				</bean> -->
+<!-- 			</list> -->
+<!-- 		</constructor-arg> -->
+<!-- 	</bean> -->
+	
+	<!-- 另外，Jedis还提供了对jedis sentinel pool的封装，所以发生主从切换的时候，web server都不需要重新配置和deploy。高可用性的极佳体现啊 -->
+	<!-- 这个mymaster的参数，就是要去sentinel里要使用的redis集群-->
+<!-- 	<bean id="redisSentinelPool" class="redis.clients.jedis.JedisSentinelPool"> -->
+<!-- 		<constructor-arg index="0" value="mymaster" /> -->
+<!-- 		<constructor-arg index="1"> -->
+<!-- 			<set> -->
+<!-- 				<value>hostofsentinel:26379</value> -->
+<!-- 			</set> -->
+<!-- 		</constructor-arg> -->
+<!-- 		<constructor-arg index="2" ref="jedisPoolConfig" /> -->
+<!-- 	</bean> -->
+	
+	
+	<!-- 这里这个可以分片，又可以主从切换。可能有bug,无法释放连接。但不会影响应用 -->
+	<bean id="shardedJedisSentinelPool" class="org.near.jedisx.pool.ShardedJedisSentinelPool" destroy-method="destroy">
+		<constructor-arg index="0">
+			<list>
+				<value>mymaster1</value>
+				<value>mymaster2</value>
+				<value>mymaster3</value>
+				<value>mymaster4</value>
+			</list>
+		</constructor-arg>
+
+		<constructor-arg index="1">
+			<set>
+				<value>192.168.1.35:26379</value>
+				<value>192.168.1.36:26479</value>
+				<value>192.168.1.37:26579</value>
+				<value>192.168.1.38:26679</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="2" ref="jedisPoolConfig" />
+		<constructor-arg index="3">
+			<value>012_345^678-90</value>
+		</constructor-arg>
+	</bean>
+
+
+</beans>

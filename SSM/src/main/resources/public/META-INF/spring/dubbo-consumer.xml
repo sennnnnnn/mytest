@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://code.alibabatech.com/schema/dubbo
+                           http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+		<dubbo:reference id="dataSourceService" version="1.0.0" check="false" validation="false"
+                 interface="org.near.database.api.DataSourceService"/>
+
+	<!-- 序列号生成 -->
+	<dubbo:reference id="sequenceService" version="1.0.0"  check="false"  validation="false"
+                 interface="org.near.database.api.SequenceService"/>
+ 
+	<!-- 用户信息 -->
+	<dubbo:reference id="userService" version="1.0.0" check="false" 
+		validation="false" interface="com.fulihui.usercore.api.UserService" />
+
+	<!-- 城市区 -->
+	<dubbo:reference id="cityModuleService" version="1.0.0" 
+		validation="false" interface="com.fulihui.systemcore.api.CityModuleService" />
+
+	<!-- 用户地址 -->
+	<dubbo:reference id="userAddressService" version="1.0.0" check="false" 
+		validation="false" interface="com.fulihui.usercore.api.UserAddressService" />
+
+	<!-- 微信token -->
+	<dubbo:reference id="wechatTokenService" validation="false" check="false" 
+		version="1.0.0" interface="com.fulihui.systemcore.api.WechatTokenService" />
+	
+	<!-- 账务 -->
+	<dubbo:reference id="userAccountService" version="1.0.0" check="false" 
+	 validation="false" interface="com.fulihui.accountcore.api.UserAccountService"/>
+
+	 <!-- 账务 -->
+	<dubbo:reference id="cardService" version="1.0.0" check="false"  timeout="10000"
+	 validation="false" interface="com.fulihui.cardcore.api.CardService"/>
+
+	<!-- User SMS -->
+	<dubbo:reference id="shortMessageService" version="1.0.0" check="false" 
+	 validation="false" interface="com.fulihui.smscore.api.ShortMessageService"/>
+	 
+	 <!-- User message -->
+	<dubbo:reference id="messageService" version="1.0.0" check="false" 
+	 validation="false" interface="com.fulihui.mscore.api.MessageService"/>
+	 
+	 	 <!-- 账务批量-->
+	<dubbo:reference id="batchUpAccountService" version="1.0.0" check="false" 
+	 validation="false" interface="com.fulihui.accountcore.api.BatchUpAccountService"/>
+	 
+	 <dubbo:reference id="userAccountRecordService" version="1.0.0" check="false" 
+	 validation="false" interface="com.fulihui.accountcore.api.UserAccountRecordService"/>
+
+	<!--微信配置获取服务 -->
+	<dubbo:reference id="wechatConfigService" validation="true"
+					 version="1.0.0" interface="com.fulihui.systemcore.api.WechatConfigService" />
+
+	<!-- propertiesService -->
+	<dubbo:reference id="propertiesService" validation="true" version="1.0.0"
+					 interface="com.fulihui.systemcore.api.PropertiesService"/>
+
+</beans>

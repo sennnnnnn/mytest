@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hs.dao.AlarmRuleDao">
+<resultMap id="alarmRule" type="com.hs.vo.AlarmRule">
+    <id column="RULE_ID" property="ruleId" />
+    <result column="COMPANY_ID" property="companyId"  />
+    <result column="PLANT_ID" property="plantId"  />
+    <result column="DEPARTMENT_ID" property="departmentId"  />
+    <result column="CHECK_ID" property="checkId"  />
+    <result column="DISCHARGE_ID" property="dischargeId"  />
+    <result column="FACTOR_ID" property="factorId"  />
+    <result column="ALARM_TYPE" property="alarmType"  />
+    <result column="ALARM_LEVEL" property="alarmLevel"  />
+    <result column="OPERATE_VAR" property="operateVar"  />
+    <result column="ALARM_VALUE" property="alarmValue" />
+    <result column="ALARM_RULE" property="alarmRule"  />
+    <result column="ALARM_TRIGGERLEN" property="alarmTriggerlen"  />
+    <result column="ALARM_REMARK" property="alarmRemark"  />
+    <result column="REMARK" property="remark"  />
+    <result column="IS_USE" property="isUse"  />
+    <result column="IS_DELETE" property="isDelete"  />
+    <result column="CREATE_TIME" property="createTime"  />
+    <result column="USER_NAME" property="userName" />
+    <result column="OPERATE_TIME" property="operateTime" />
+    <result column="OPERATE_NAME" property="operateName" />
+</resultMap>  
+
+	<!-- 查询所有启用未删除的规则的规则 -->
+	<select id="useRule" resultMap="alarmRule">
+		select * from T_BASE_ALARM_RULE where IS_USE = 0  and IS_DELETE = 0 and RULE_ID = 6
+	</select>
+
+</mapper>
